@@ -17,6 +17,44 @@ export const profile = {
   cvPath: "/assets/Mehdi-Jouhari-CV-REPLACE.pdf",
 };
 
+export const technologyIcons = [
+  { name: "AWS", slug: "amazonaws", color: "FF9900", url: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-original.svg" },
+  { name: "Azure", slug: "microsoftazure", color: "0078D4", url: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/azure/azure-original.svg" },
+  { name: "Kubernetes", slug: "kubernetes", color: "326CE5" },
+  { name: "Docker", slug: "docker", color: "2496ED" },
+  { name: "Terraform", slug: "terraform", color: "844FBA" },
+  { name: "Argo CD", slug: "argo", color: "EF7B4D" },
+  { name: "Helm", slug: "helm", color: "0F1689" },
+  { name: "Backstage", slug: "backstage", color: "9BF0E1" },
+  { name: "Python", slug: "python", color: "3776AB" },
+  { name: "Go", slug: "go", color: "00ADD8" },
+  { name: "Apache Kafka", slug: "apachekafka", color: "FFFFFF" },
+  { name: "PostgreSQL", slug: "postgresql", color: "4169E1" },
+  { name: "MLflow", slug: "mlflow", color: "0194E2" },
+  { name: "OpenSearch", slug: "opensearch", color: "005EB8" },
+  { name: "Prometheus", slug: "prometheus", color: "E6522C" },
+  { name: "OpenShift", slug: "redhatopenshift", color: "EE0000" },
+];
+
+export const stackTechnologyIcons = [
+  ...technologyIcons,
+  { name: "Bash", slug: "gnubash", color: "4EAA25" },
+  { name: "RabbitMQ", slug: "rabbitmq", color: "FF6600" },
+  { name: "LangGraph", slug: "langgraph", color: "1C3C3C" },
+  { name: "Istio", slug: "istio", color: "466BB0" },
+];
+
+export const stackIconAliases = {
+  "AWS Bedrock": "AWS",
+  "AWS EKS": "AWS",
+  "AWS SAM": "AWS",
+  ArgoCD: "Argo CD",
+  Kafka: "Apache Kafka",
+  SQS: "AWS",
+  EventBridge: "AWS",
+  SNS: "AWS",
+};
+
 export const projects = [
   {
     id: "bedrock-rag-api", category: "CLOUD / AI ENGINEERING / SERVERLESS",
@@ -97,7 +135,7 @@ export const expertise = [
 
 export const stackGroups = [
   { name: "Cloud", items: ["AWS", "Azure", "AWS Bedrock", "AWS EKS"] },
-  { name: "Containers & orchestration", items: ["Kubernetes", "Docker", "Helm", "vCluster"] },
+  { name: "Containers & orchestration", items: ["Kubernetes", "OpenShift", "Docker", "Helm", "vCluster"] },
   { name: "Infrastructure as code", items: ["Terraform", "Crossplane", "AWS SAM"] },
   { name: "GitOps & platform", items: ["ArgoCD", "Backstage", "Crossplane"] },
   { name: "Security", items: ["OPA", "Gatekeeper", "SAST", "DAST", "SCA", "SBOM", "IAM"] },

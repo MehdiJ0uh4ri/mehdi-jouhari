@@ -1,8 +1,15 @@
-import { profile, projects, secondaryRepositories, expertise, stackGroups, journey } from "./data.js";
+import { profile, projects, secondaryRepositories, expertise, stackGroups, journey, technologyIcons, stackTechnologyIcons, stackIconAliases } from "./data.js";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const escapeHTML = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
 const repoURL = (name) => `${profile.github}/${name}`;
+const technologyIconUrl = ({ slug, color, url }) => url || `https://cdn.simpleicons.org/${slug}/${color}`;
+const technologyInitials = (name) => name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2);
+
+function renderTechnologyMark(name, icon) {
+  const image = icon ? `<img class="technology-logo" src="${escapeHTML(technologyIconUrl(icon))}" alt="" loading="lazy" decoding="async">` : "";
+  return `<span class="technology-mark stack-mark">${image}<span class="technology-fallback" aria-hidden="true">${escapeHTML(technologyInitials(name))}</span></span>`;
+}
 
 function renderProfile() {
   document.title = `${profile.name} — ${profile.title}`;
@@ -48,12 +55,26 @@ function renderProjectDetail(project) {
 }
 
 function renderContent() {
+  const technologyItems = technologyIcons.map((icon) => `<span class="technology-chip">${renderTechnologyMark(icon.name, icon)}<span>${escapeHTML(icon.name)}</span></span>`).join("");
+  $("#technology-track").innerHTML = `<div class="technology-group">${technologyItems}</div><div class="technology-group" aria-hidden="true">${technologyItems}</div>`;
   $("#project-gallery").innerHTML = projects.map(renderProjectCard).join("");
   $("#secondary-repositories").innerHTML = secondaryRepositories.map(({ name, url }) => `<a class="repo-item" href="${escapeHTML(url)}" target="_blank" rel="noreferrer"><span>${escapeHTML(name)}</span><i aria-hidden="true">↗</i></a>`).join("");
   $("#expertise-grid").innerHTML = expertise.map((item) => `<article class="expertise-card reveal"><div class="expertise-card-top"><span>${escapeHTML(item.number)} / DOMAIN</span><span class="expertise-glyph" aria-hidden="true">${escapeHTML(item.name.split(/[ &]/).filter(Boolean).map((word) => word[0]).slice(0, 2).join(""))}</span></div><h3>${escapeHTML(item.name)}</h3><p>${escapeHTML(item.description)}</p><ul>${item.capabilities.map((capability) => `<li>${escapeHTML(capability)}</li>`).join("")}</ul><div class="expertise-tags">${item.technologies.map((technology) => `<span>${escapeHTML(technology)}</span>`).join("")}</div></article>`).join("");
-  $("#stack-groups").innerHTML = stackGroups.map((group, index) => `<div class="stack-row reveal"><span class="stack-index">0${index + 1}</span><h3>${escapeHTML(group.name)}</h3><div class="stack-items">${group.items.map((item) => `<span class="stack-item"><i aria-hidden="true">${escapeHTML(item.split(/[ .]/).map((word) => word[0]).join("").slice(0, 2))}</i>${escapeHTML(item)}</span>`).join("")}</div></div>`).join("");
+  const iconByName = new Map(stackTechnologyIcons.map((icon) => [icon.name, icon]));
+  $("#stack-groups").innerHTML = stackGroups.map((group, index) => `<div class="stack-row reveal"><span class="stack-index">0${index + 1}</span><h3>${escapeHTML(group.name)}</h3><div class="stack-items">${group.items.map((item) => `<span class="stack-item">${renderTechnologyMark(item, iconByName.get(stackIconAliases[item] || item))}<span>${escapeHTML(item)}</span></span>`).join("")}</div></div>`).join("");
   $("#timeline").innerHTML = journey.map((item) => `<article class="timeline-entry reveal"><span class="timeline-marker" aria-hidden="true"></span><span class="timeline-type">${escapeHTML(item.type)}</span><div><h3>${escapeHTML(item.title)}</h3><p class="timeline-org">${escapeHTML(item.organization)}</p><p>${escapeHTML(item.details)}</p></div><span class="timeline-date">${escapeHTML(item.date)}</span></article>`).join("");
   $("#current-year").textContent = String(new Date().getFullYear());
+}
+
+function setupTechnologyLogos() {
+  document.querySelectorAll(".technology-logo").forEach((image) => {
+    const mark = image.parentElement;
+    const markLoaded = () => mark.classList.add("has-logo");
+    const markUnavailable = () => mark.classList.add("logo-unavailable");
+    image.addEventListener("load", markLoaded, { once: true });
+    image.addEventListener("error", markUnavailable, { once: true });
+    if (image.complete) image.naturalWidth ? markLoaded() : markUnavailable();
+  });
 }
 
 function setupProjects() {
@@ -155,6 +176,7 @@ function setupReveals() {
 
 renderProfile();
 renderContent();
+setupTechnologyLogos();
 setupTheme();
 setupProjects();
 setupNavigation();
